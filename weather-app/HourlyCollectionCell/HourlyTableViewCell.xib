@@ -9,15 +9,36 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="91" id="KGk-i7-Jjw" customClass="HourlyTableViewCell" customModule="weather_app" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="91"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HourlyTableViewCell" rowHeight="249" id="KGk-i7-Jjw" customClass="HourlyTableViewCell" customModule="weather_app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="370" height="249"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="91"/>
+                <rect key="frame" x="0.0" y="0.0" width="370" height="249"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="vuj-QR-ECV">
+                        <rect key="frame" x="0.0" y="0.0" width="370" height="249"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QA6-AY-IdY">
+                            <size key="itemSize" width="128" height="230"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                    </collectionView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="vuj-QR-ECV" secondAttribute="bottom" id="IIL-43-ddf"/>
+                    <constraint firstItem="vuj-QR-ECV" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Nq0-Xe-xDw"/>
+                    <constraint firstItem="vuj-QR-ECV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="jhR-QV-NO0"/>
+                    <constraint firstAttribute="trailing" secondItem="vuj-QR-ECV" secondAttribute="trailing" id="sF8-55-1Zp"/>
+                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <point key="canvasLocation" x="-265" y="70"/>
+            <connections>
+                <outlet property="collectionView" destination="vuj-QR-ECV" id="5gp-bg-0f3"/>
+            </connections>
+            <point key="canvasLocation" x="-228.98550724637684" y="17.075892857142858"/>
         </tableViewCell>
     </objects>
 </document>

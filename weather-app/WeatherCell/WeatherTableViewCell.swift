@@ -19,7 +19,7 @@ class WeatherTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        backgroundColor = .gray
+       
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -36,6 +36,9 @@ class WeatherTableViewCell: UITableViewCell {
     
     
     func configure(with model : Daily) {
+        self.lowTempLabel.textAlignment = .center
+        self.highTempLabel.textAlignment = .center
+        
         self.lowTempLabel.text = "\(Int((model.temp.min)))°"
         self.highTempLabel.text = "\(Int((model.temp.max)))°"
         self.dayLabel.text = getDayForDate(Date(timeIntervalSince1970: Double(model.dt)))

@@ -20,12 +20,19 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     
     var currentLocation  : CLLocation?
     
+    var currentWeather: Current?
+    
+    var hourlyModels = [Current]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
         table.register(HourlyTableViewCell.nib(), forCellReuseIdentifier: HourlyTableViewCell.identifier)
         table.register(WeatherTableViewCell.nib(), forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        
+        table.backgroundColor = getBackgroundColor()
+        view.backgroundColor = getBackgroundColor()
         
         table.delegate = self
         table.dataSource = self
@@ -42,17 +49,43 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         
     }
     
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if section == 0 {
+            return 1
+        }
+        
         return models.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HourlyTableViewCell.identifier,for: indexPath) as! HourlyTableViewCell
+            cell.configure(with: self.hourlyModels)
+            cell.backgroundColor = getBackgroundColor()
+            return cell
+        }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier,for: indexPath) as! WeatherTableViewCell
         cell.configure(with: models[indexPath.row])
+        cell.backgroundColor = getBackgroundColor()
         return cell
     }
     
+    func getBackgroundColor() -> UIColor {
+        
+        return UIColor(red: 28/255.0, green: 156/255.0, blue: 246/255.0, alpha: 1)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
     
     func setupLocationManager() {
         locationManager.delegate = self
@@ -108,15 +141,66 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
             
             self.models.append(contentsOf: entries)
             
+            let current = result.current
+            self.currentWeather  = current
+            
+            let hourly = result.hourly
+            
+           
+            
+            self.hourlyModels = hourly
+            
             //Update user interface
+            
+            
+    
             
             DispatchQueue.main.async {
                 self.table.reloadData()
+                self.table.tableHeaderView = self.createTableHeader()
             }
             
             
         }).resume()
         
+    }
+
+    
+    func createTableHeader() -> UIView {
+        let headerView = UIView(frame: CGRect(x: 0, y:0, width: view.frame.size.width, height: view.frame.size.width))
+        
+        headerView.backgroundColor = getBackgroundColor()
+        
+        
+        let locationLabel = UILabel(frame: CGRect(x: 10, y: 10, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
+        
+        let summaryLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
+        
+        let tempLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height+summaryLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/3))
+        
+        tempLabel.text = "\(Int(self.currentWeather!.temp))°"
+        tempLabel.textAlignment = .center
+        tempLabel.font = UIFont(name: "Helvetica-Bold", size: 32)
+        
+        locationLabel.text = "Current Location"
+        locationLabel.textAlignment = .center
+        
+        
+        summaryLabel.text = currentWeather?.weather.first?.description
+        summaryLabel.textAlignment = .center
+        
+        
+       
+        
+        
+        
+        headerView.addSubview(locationLabel)
+        headerView.addSubview(summaryLabel)
+        headerView.addSubview(tempLabel)
+        
+        
+        
+        return headerView
     }
 }
 
