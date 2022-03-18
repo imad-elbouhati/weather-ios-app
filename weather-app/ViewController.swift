@@ -24,6 +24,8 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     
     var hourlyModels = [Current]()
     
+    var weatherResponse:WeatherResponse?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,7 +38,7 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         
         table.delegate = self
         table.dataSource = self
-        
+        table.separatorColor = .white
         
     }
     
@@ -69,6 +71,11 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
             let cell = tableView.dequeueReusableCell(withIdentifier: HourlyTableViewCell.identifier,for: indexPath) as! HourlyTableViewCell
             cell.configure(with: self.hourlyModels)
             cell.backgroundColor = getBackgroundColor()
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: .greatestFiniteMagnitude)
+            cell.directionalLayoutMargins = .zero
+            
+            
+            
             return cell
         }
         
@@ -80,11 +87,14 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     
     func getBackgroundColor() -> UIColor {
         
-        return UIColor(red: 102/255.0, green: 166/255.0, blue: 204/255.0, alpha: 1)
+        return UIColor(red: 158/255.0, green: 203/255.0, blue: 230/255.0, alpha: 1)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        if(indexPath.row == 0) {
+            return 100
+        }
+        return 70
     }
     
     func setupLocationManager() {
@@ -137,7 +147,11 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
             }
             
             
+            
+            
             let entries = result.daily
+            
+            self.weatherResponse = result
             
             self.models.append(contentsOf: entries)
             
@@ -167,27 +181,65 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
 
     
     func createTableHeader() -> UIView {
-        let headerView = UIView(frame: CGRect(x: 0, y:0, width: view.frame.size.width, height: view.frame.size.width))
+        let headerView = UIView(frame: CGRect(x: 0, y:0, width: view.frame.size.width, height: view.frame.size.height/4+100))
+        
+       
         
         headerView.backgroundColor = getBackgroundColor()
         
+      
         
-        let locationLabel = UILabel(frame: CGRect(x: 10, y: 10, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
         
-        let summaryLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/5))
+        let locationLabel = UILabel(frame: CGRect(x: 10, y: 10, width: view.frame.size.width-20, height: headerView.frame.size.height/4))
         
-        let tempLabel = UILabel(frame: CGRect(x: 10, y: 20+locationLabel.frame.size.height+summaryLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/3))
+        
+        
+        let tempLabel = UILabel(frame: CGRect(x: 10, y: locationLabel.frame.size.height+20, width: view.frame.size.width-20, height: headerView.frame.size.height/4))
+
+        
+    
+        
+        let summaryLabel = UILabel(frame: CGRect(x: 10, y: tempLabel.frame.origin.y+tempLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/8))
+
+        
+        let maxMinLabel = UILabel(frame: CGRect(x: 10, y: summaryLabel.frame.origin.y+summaryLabel.frame.size.height, width: view.frame.size.width-20, height: headerView.frame.size.height/8-25))
+        
+        
+        
+    
         
         tempLabel.text = "\(Int(self.currentWeather!.temp))°"
         tempLabel.textAlignment = .center
-        tempLabel.font = UIFont(name: "Helvetica", size: 60)
+        tempLabel.font = getFont(70)
+        tempLabel.textColor = getColor(255, 255, 255)
+        tempLabel.drawShadow(offset: CGSize(width: 1 ,height: 2), opacity: 0.2, color: .black, radius: 2.0)
+        
         
         locationLabel.text = "Current Location"
         locationLabel.textAlignment = .center
+        locationLabel.font = getFont(30)
+        locationLabel.textColor = getColor(255, 255, 255)
+        locationLabel.drawShadow(offset: CGSize(width: 1 ,height: 2), opacity: 0.2, color: .black, radius: 2.0)
         
         
         summaryLabel.text = currentWeather?.weather.first?.description
         summaryLabel.textAlignment = .center
+        summaryLabel.font = getFont()
+        summaryLabel.textColor = getColor(255, 255, 255)
+        summaryLabel.drawShadow(offset: CGSize(width: 1 ,height: 2), opacity: 0.2, color: .black, radius: 2.0)
+
+        
+        
+        let min = Int((weatherResponse?.daily.first?.temp.min)!)
+        let max:Int = Int((weatherResponse?.daily.first?.temp.max)!)
+        
+        maxMinLabel.text = "Max. \(max)° Min. \(min)°"
+        maxMinLabel.textAlignment = .center
+        maxMinLabel.font = getFont()
+        maxMinLabel.textColor = getColor(255, 255, 255)
+        maxMinLabel.drawShadow(offset: CGSize(width: 1 ,height: 2), opacity: 0.2, color: .black, radius: 2.0)
+
+        
         
         
        
@@ -197,10 +249,35 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         headerView.addSubview(locationLabel)
         headerView.addSubview(summaryLabel)
         headerView.addSubview(tempLabel)
+        headerView.addSubview(maxMinLabel)
         
         
         
         return headerView
+    }
+    
+    
+    
+    func getFont(_ size:CGFloat = 20) -> UIFont? {
+        return UIFont(name:"AppleSDGothicNeo-Light",size: size)
+    }
+    
+    func getColor(_ red:Int,_ green:Int, _ blue:Int) -> UIColor {
+        
+        return UIColor(red: CGFloat(red)/255.0, green: CGFloat(green)/255.0, blue: CGFloat(blue)/255.0, alpha: 1)
+    }
+    
+   
+}
+
+
+extension  UIView {
+    func drawShadow(offset:CGSize,opacity:Float = 0.25,color:UIColor = .black,radius:CGFloat = 1) {
+        layer.masksToBounds = false
+        layer.shadowColor = color.cgColor
+        layer.shadowOffset = offset
+        layer.shadowOpacity = opacity
+        layer.shadowRadius = radius
     }
 }
 

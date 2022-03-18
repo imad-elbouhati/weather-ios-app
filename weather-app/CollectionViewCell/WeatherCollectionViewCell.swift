@@ -19,12 +19,16 @@ class WeatherCollectionViewCell: UICollectionViewCell {
     @IBOutlet var tempLabel:UILabel!
     @IBOutlet var hourLabel:UILabel!
     
+    
+    
     func configure(with model:Current) {
         self.tempLabel.text = "\(Int(model.temp))°"
         hourLabel.text = getHourForDate(Date(timeIntervalSince1970: Double(model.dt)))
         
         let icon = model.weather.first?.icon
         let imageUrl =  "http://openweathermap.org/img/wn/\(icon!)@2x.png"
+        
+        
         
         self.iconImageView.downloaded(from: imageUrl)
     }
