@@ -80,7 +80,7 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     
     func getBackgroundColor() -> UIColor {
         
-        return UIColor(red: 28/255.0, green: 156/255.0, blue: 246/255.0, alpha: 1)
+        return UIColor(red: 102/255.0, green: 166/255.0, blue: 204/255.0, alpha: 1)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -180,7 +180,7 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         
         tempLabel.text = "\(Int(self.currentWeather!.temp))°"
         tempLabel.textAlignment = .center
-        tempLabel.font = UIFont(name: "Helvetica-Bold", size: 32)
+        tempLabel.font = UIFont(name: "Helvetica", size: 60)
         
         locationLabel.text = "Current Location"
         locationLabel.textAlignment = .center

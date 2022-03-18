@@ -69,7 +69,7 @@
                 <outlet property="iconImageView" destination="dmK-P4-uKR" id="Uaa-tz-ivU"/>
                 <outlet property="lowTempLabel" destination="1To-bc-uOl" id="Hly-pn-dQu"/>
             </connections>
-            <point key="canvasLocation" x="192" y="65"/>
+            <point key="canvasLocation" x="197.82608695652175" y="67.633928571428569"/>
         </tableViewCell>
     </objects>
 </document>
