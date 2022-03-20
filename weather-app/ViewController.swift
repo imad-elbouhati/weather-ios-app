@@ -26,6 +26,8 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     
     var weatherResponse:WeatherResponse?
     
+    lazy var geocoder = CLGeocoder()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -122,6 +124,7 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         let long = currentLocation.coordinate.longitude
         let lat = currentLocation.coordinate.latitude
         
+        
         let url = "https://api.openweathermap.org/data/2.5/onecall?lat=\(lat)&lon=\(long)&exclude=minutely&units=metric&appid=f901a2900e9526f5e4843c3751f96710"
         
         print(url)
@@ -169,6 +172,7 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
             
     
             
+            
             DispatchQueue.main.async {
                 self.table.reloadData()
                 self.table.tableHeaderView = self.createTableHeader()
@@ -215,6 +219,26 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
         tempLabel.drawShadow(offset: CGSize(width: 1 ,height: 2), opacity: 0.2, color: .black, radius: 2.0)
         
         
+        
+        let location = currentLocation!
+
+           // Geocode Location
+        geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+               // Process Response
+               
+            if let error = error {
+                print("Unable to Reverse Geocode Location (\(error))")
+                locationLabel.text = "Unable to Find Address for Location"
+
+            } else {
+                if let placemarks = placemarks, let placemark = placemarks.first {
+                    locationLabel.text = placemark.compactAddress
+                } else {
+                    locationLabel.text = "No Matching Addresses Found"
+                }
+            }
+           }
+        
         locationLabel.text = "Current Location"
         locationLabel.textAlignment = .center
         locationLabel.font = getFont(30)
@@ -257,6 +281,10 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     }
     
     
+    private func processResponse(withPlacemarks placemarks: [CLPlacemark]?, error: Error?) {
+
+    }
+    
     
     func getFont(_ size:CGFloat = 20) -> UIFont? {
         return UIFont(name:"AppleSDGothicNeo-Light",size: size)
@@ -281,4 +309,30 @@ extension  UIView {
     }
 }
 
+
+extension CLPlacemark {
+
+    var compactAddress: String? {
+        if let name = name {
+            var result = name
+
+            /*if let street = thoroughfare {
+                result += ", \(street)"
+            }*/
+
+            /*if let city = locality {
+                result += ", \(city)"
+            }*/
+
+            if let locality = locality {
+                result += "\(locality)"
+            }
+
+            return locality
+        }
+
+        return nil
+    }
+
+}
 
